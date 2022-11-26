@@ -34,51 +34,7 @@ class TodoView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<TodoCubit, TodoState>(
-      listener: (context, state) {
-        if (state is TodoDeleted) {
-          final isWeb = context.read<TestHelper>().isWeb;
-          final isDesktop = Theme.of(context).platform.isDesktop;
-
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                behavior: isWeb || isDesktop
-                    ? SnackBarBehavior.floating
-                    : SnackBarBehavior.fixed,
-                width: isWeb || isDesktop
-                    ? MediaQuery.of(context).size.width > 600
-                        ? 550
-                        : null
-                    : null,
-                content: RichText(
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  text: TextSpan(
-                    style: TextStyle(
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? Colors.black
-                          : Colors.white,
-                    ),
-                    children: [
-                      const TextSpan(text: 'Deleting: '),
-                      TextSpan(
-                        text: state.deletedTodo.title,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ),
-                action: SnackBarAction(
-                  label: 'Undo',
-                  onPressed: () {
-                    context.read<TodoCubit>().undoDelete();
-                  },
-                ),
-              ),
-            );
-        }
-      },
+      listener: _todoCubitListener,
       builder: (context, state) {
         if (state is TodoLoading) {
           return const Center(
@@ -102,16 +58,15 @@ class TodoView extends StatelessWidget {
           children: [
             Expanded(
               child: ListView.builder(
+                physics: const BouncingScrollPhysics(),
                 controller: ScrollController(),
-                itemCount: state.todos.length + 1,
+                padding: const EdgeInsets.only(bottom: 90),
+                itemCount: state.todos.length,
                 itemBuilder: (context, i) {
-                  // Adding extra height at the end,
-                  // for spacing between last item and FAB
-                  if (i == state.todos.length) {
-                    return const SizedBox(height: 80);
-                  }
-
-                  return TodoItem(todo: state.todos[i]);
+                  return TodoItem(
+                    key: ObjectKey(state.todos[i].id),
+                    todo: state.todos[i],
+                  );
                 },
               ),
             ),
@@ -123,5 +78,51 @@ class TodoView extends StatelessWidget {
         );
       },
     );
+  }
+
+  void _todoCubitListener(BuildContext context, TodoState state) {
+    if (state is TodoDeleted) {
+      final isWeb = context.read<TestHelper>().isWeb;
+      final isDesktop = Theme.of(context).platform.isDesktop;
+
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            behavior: isWeb || isDesktop
+                ? SnackBarBehavior.floating
+                : SnackBarBehavior.fixed,
+            width: isWeb || isDesktop
+                ? MediaQuery.of(context).size.width > 600
+                    ? 550
+                    : null
+                : null,
+            content: RichText(
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              text: TextSpan(
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black
+                      : Colors.white,
+                ),
+                children: [
+                  const TextSpan(text: 'Deleting: '),
+                  TextSpan(
+                    text: state.deletedTodo.title,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+            action: SnackBarAction(
+              label: 'Undo',
+              onPressed: () {
+                context.read<TodoCubit>().undoDelete();
+              },
+            ),
+          ),
+        );
+    }
   }
 }
