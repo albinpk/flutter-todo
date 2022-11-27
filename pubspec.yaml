@@ -47,3 +47,15 @@ flutter_icons:
     generate: true
   macos:
     generate: true
+
+# flutter_native_splash config
+flutter_native_splash:
+  color: "#FFFFFF"
+  color_dark: "#303030"
+  image: "assets/images/splash-image-light.png"
+  image_dark: "assets/images/splash-image-dark.png"
+  android_12:
+    image: "assets/images/splash-image-light.png"
+    image_dark: "assets/images/splash-image-dark.png"
+    color: "#FFFFFF"
+    color_dark: "#303030"
