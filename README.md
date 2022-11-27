@@ -1,4 +1,8 @@
-# Todo
+<h1 align="center">
+<img src="./assets/icons/todo-icon.png" height="200px" alt="Todo app logo"/>
+<br>
+Todo App
+</h1>
 
 [![000-todo](https://github.com/albinpk/flutter-apps/actions/workflows/000-todo.yaml/badge.svg?branch=master)](https://github.com/albinpk/flutter-apps/actions/workflows/000-todo.yaml)
 [![codecov](https://codecov.io/gh/albinpk/flutter-apps/branch/master/graph/badge.svg?token=K4XAWGNR2F)](https://codecov.io/gh/albinpk/flutter-apps)
